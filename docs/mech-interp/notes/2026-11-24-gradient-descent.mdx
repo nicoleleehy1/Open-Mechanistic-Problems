@@ -1,0 +1,71 @@
+---
+title: "gradient descent, how neural networks learn"
+sidebar_label: "gradient descent"
+sidebar_position: 2
+---
+
+# gradient descent, how neural networks learn
+
+## part 2: how does a network learn?
+[3blue1brown, neural networks chapter 2](https://www.youtube.com/watch?v=IHZwWFHWa-w&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
+
+### terms
+- **training data**: lots of images, each with a **label** (the right answer). mnist has tens of thousands of labeled handwritten digits.
+- **cost (loss) function** $C$: one number that says how *bad* the network is. low cost means good.
+- **gradient** $\nabla C$: the direction that makes the cost go *up* fastest. its size says how steep it is.
+- **gradient descent**: repeatedly take a small step in the direction $-\nabla C$, downhill.
+- **learning** = minimizing the cost function.
+- **test data**: images the network never saw during training. it's used to check that the network *generalizes* instead of memorizing.
+
+### the cost of one example
+compare the network's 10 outputs to what they *should* be: 1 for the right digit and 0 for the rest. then add up the squared differences:
+
+$$
+C_0 = \sum_{j=0}^{9} \left(a^{(L)}_j - y_j\right)^2
+$$
+
+- $a^{(L)}_j$ is the activation of output neuron $j$. $L$ is the last layer.
+- $y_j$ is the desired output: 1 if $j$ is the correct digit, 0 otherwise.
+- the cost is small when the network is confident and correct, and large when it's confused or wrong.
+
+### the cost of the whole network
+average over all $n$ training examples:
+
+$$
+C(w_1, \dots, w_{13002}) = \frac{1}{n} \sum_{i=1}^{n} C_i
+$$
+
+the network is a function from 784 pixels to 10 numbers, with 13,002 parameters.
+the cost is a function from 13,002 parameters to 1 number: how bad those weights and biases are.
+
+### the intuition: rolling a ball downhill
+- with one input, $C(w)$ is a curve. to find a minimum, look at the slope. if it's positive, move left. if it's negative, move right.
+- take steps **proportional to the slope**, so steps get smaller near the bottom and you don't overshoot.
+- you'll land in a **local minimum**, which isn't necessarily the best possible one. where you end up depends on where you start (random initial weights).
+- with 13,002 inputs, it's the same idea in a 13,002-dimensional space. the gradient points uphill, so step the other way.
+
+### one step of gradient descent
+stack all the weights and biases into one big vector $\mathbf{W}$:
+
+$$
+\mathbf{W} \leftarrow \mathbf{W} - \eta \, \nabla C(\mathbf{W})
+$$
+
+- $\eta$ ("eta") is the **learning rate**, meaning how big a step to take.
+- $\nabla C$ is a vector with 13,002 entries, one per weight or bias.
+
+### what the gradient tells you
+each entry of $-\nabla C$ says two things:
+- **sign**: should this weight go up or down?
+- **size**: how much does the cost care about this weight? a big entry means nudging it matters a lot.
+
+so the gradient ranks which changes to which weights give you the most bang for your buck.
+
+### why activations are smooth
+the cost needs a smooth slope to follow, so neurons have continuous activations (sigmoid) instead of on/off switches, like biological neurons.
+
+### results, and the interesting part for mech interp
+- this 784 → 16 → 16 → 10 network gets about **96%** of new test images right (about 98% with some tweaks).
+- **but** the hidden neurons don't pick up edges and loops like we hoped in part 1. their weights look almost random.
+- feed it random noise and it confidently says it's some digit. it never learned to say "this isn't a digit."
+- takeaway: a network can work well without doing what we *assumed* it does. finding out what it actually does is mech interp.
