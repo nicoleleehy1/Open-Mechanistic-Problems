@@ -11,7 +11,7 @@ This repo is a record of everything I learn, including all my code, my notes, an
 
 | # | Notebook | Technique | What it finds |
 | --- | --- | --- | --- |
-| 01 | [01_pytorch_basics.ipynb](experiments/01_pytorch_basics.ipynb) | Training a small network on MNIST | _planned_ |
+| 01 | [01_pytorch_basics.ipynb](experiments/01_pytorch_basics.ipynb) | does the 3blue1brown network learn edges? (MNIST, weight visualization) | _in progress_ |
 
 ### Running the notebooks
 - Open any notebook in Google Colab (on GitHub, swap `github.com` for `colab.research.google.com/github` in the URL), or

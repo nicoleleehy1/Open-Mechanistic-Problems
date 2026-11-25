@@ -1,0 +1,6 @@
+torch
+transformer_lens
+einops
+plotly
+circuitsvis
+jupyter
