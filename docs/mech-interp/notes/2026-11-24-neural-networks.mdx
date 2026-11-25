@@ -1,0 +1,77 @@
+---
+title: "introduction to neural networks"
+sidebar_label: "neural networks"
+sidebar_position: 1
+---
+
+# introduction to neural networks
+
+**a quick introduction:**
+hi! this is the first of my ongoing indpendent learning journey about mechanistic interpretability in ai.
+i will try to keep a running log of my findings, questions, and programming process
+
+## part 1: what is a neural network?
+[3blue1brown, neural networks chapter 1](https://www.youtube.com/watch?v=aircAruvnKk&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
+
+### terms
+- **neuron**: holds a single number between 0 and 1, called its **activation**. for the input layer, that's a pixel's brightness, from 0 (black) to 1 (white).
+- **layer**: a column of neurons. the network goes input layer (784 pixels, from a 28×28 image), then **hidden layers**, then the output layer (10 neurons, one per digit).
+- **activations in one layer determine the activations in the next.** the brightest output neuron is the network's guess.
+- **weights** $w$: one per connection between two neurons. they decide which pattern in the previous layer a neuron is looking for.
+- **bias** $b$: one per neuron. it decides how high the weighted sum must be before the neuron becomes meaningfully active.
+- **learning** = finding the right weights and biases.
+
+### the intuition: layers break the problem into subproblems
+pixels → edges → patterns (loops, lines) → digits
+
+the second-to-last to last layer learns which combination of patterns corresponds to which digit.
+(this is the *hope*. chapter 2 shows a trained network mostly doesn't do this, and checking what a network really does is exactly what mech interp is about.)
+
+### one neuron
+take every activation from the previous layer, compute a weighted sum, add the bias, then squish it into the range 0 to 1:
+
+$$
+a^{(1)}_0 = \sigma\left(w_{0,0}\,a^{(0)}_0 + w_{0,1}\,a^{(0)}_1 + \dots + w_{0,n}\,a^{(0)}_n + b_0\right)
+$$
+
+- $a^{(0)}_k$ is the activation of neuron $k$ in layer 0. the superscript is the layer, the subscript is the neuron.
+- $w_{j,k}$ is the weight of the connection from neuron $k$ (previous layer) to neuron $j$ (next layer).
+- the bias is *added*. a negative bias, like $b = -10$, means "only fire if the weighted sum is above 10".
+
+### sigmoid (the "squishification" function)
+
+$$
+\sigma(x) = \frac{1}{1 + e^{-x}}
+$$
+
+very negative inputs go to about 0, very positive inputs go to about 1, and $\sigma(0) = 0.5$.
+
+### the whole layer at once (matrix form)
+every neuron in layer 1 is connected to every neuron in layer 0, and each connection has its own weight. stack them up:
+
+- activations of layer 0 → a column vector $\mathbf{a}^{(0)}$ with $n$ entries
+- weights → a matrix $W$ with one **row per neuron in the next layer** (row $j$ holds all the weights going into neuron $j$)
+- biases → a column vector $\mathbf{b}$
+
+each row of $W$ times $\mathbf{a}^{(0)}$ is one weighted sum, so a single matrix-vector product computes all of them:
+
+$$
+\begin{bmatrix} w_{0,0} & w_{0,1} & \cdots & w_{0,n} \\ w_{1,0} & w_{1,1} & \cdots & w_{1,n} \\ \vdots & \vdots & \ddots & \vdots \\ w_{k,0} & w_{k,1} & \cdots & w_{k,n} \end{bmatrix}
+\begin{bmatrix} a^{(0)}_0 \\ a^{(0)}_1 \\ \vdots \\ a^{(0)}_n \end{bmatrix}
++
+\begin{bmatrix} b_0 \\ b_1 \\ \vdots \\ b_k \end{bmatrix}
+$$
+
+then apply $\sigma$ to each entry. in short:
+
+$$
+\mathbf{a}^{(1)} = \sigma\left(W\mathbf{a}^{(0)} + \mathbf{b}\right)
+$$
+
+so the whole network is just this step repeated, layer after layer. it's a (very big) function from 784 numbers to 10 numbers.
+
+### how many dials?
+for 784 → 16 → 16 → 10:
+weights $= 784 \cdot 16 + 16 \cdot 16 + 16 \cdot 10 = 12{,}960$,
+biases $= 16 + 16 + 10 = 42$,
+total $= 13{,}002$ parameters to learn.

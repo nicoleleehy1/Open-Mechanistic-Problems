@@ -1,0 +1,8 @@
+{
+  "label": "notes",
+  "position": 3,
+  "link": {
+    "type": "generated-index",
+    "description": "dated lab notes: what i did, what i learned, and what confused me. newest at the top."
+  }
+}
