@@ -1,0 +1,8 @@
+{
+  "label": "lab notebook",
+  "position": 0,
+  "link": {
+    "type": "generated-index",
+    "description": "my notes and findings from Neel Nanda's 200 Concrete Open Problems in Mechanistic Interpretability."
+  }
+}

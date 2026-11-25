@@ -1,0 +1,71 @@
+---
+sidebar_position: 4
+title: getting-started roadmap
+description: The path I'm following to go from zero ML to working on a mech interp problem.
+---
+
+# getting-started roadmap
+
+This follows Neel Nanda's
+[Concrete Steps to Get Started in Transformer Mechanistic Interpretability](https://www.alignmentforum.org/s/yivyHaCAmMJ3CqSyj/p/9ezkEb9oGvEi6WoB3).
+His core advice: spend **at least a third of your time writing code**, and don't over-learn prerequisites.
+When in doubt, move on and come back when you get stuck.
+
+*Note: the sequence is from 2022.* Neel added a note in 2024 saying the 200 problems are "fairly out of date" and don't cover sparse
+autoencoders (SAEs), which are now a big part of the field. They're still good practice problems.
+
+## step 0: python basics
+If you're comfortable writing Python functions and using lists and dicts, you're fine.
+Do everything in [Google Colab](https://colab.research.google.com/) so you never have to install anything.
+
+## step 1: just enough ml (neel's estimate: 10 to 40 hours)
+**Done when:** you can train a small neural network (an MLP) in PyTorch to recognise handwritten digits (MNIST).
+
+What to read from Berkeley courses:
+
+- **CS189 (Intro to Machine Learning) is the useful one.** Focus on these topics:
+  - Linear algebra review: vectors, matrices, matrix multiplication, dot products. This is the most important one for mech interp, since everything inside a model is a vector.
+  - Eigenvectors and SVD / PCA: used constantly to find "directions" inside a model.
+  - Gradient descent: how models learn.
+  - Logistic regression and softmax: the last step of every language model.
+  - Neural networks and backpropagation.
+  - Skip or skim kernels, SVMs, decision trees, and most of the classical statistics.
+- **CS188 (Intro to AI) is mostly not relevant.** It covers search, games, and probabilistic reasoning
+  (Bayes nets, MDPs). The probability basics help a little, and the RL lectures only matter if you
+  pick the "Interpreting Reinforcement Learning" category.
+- Optional, very beginner-friendly: 3Blue1Brown's YouTube series on neural networks and on transformers.
+
+## step 2: understand transformers deeply (10 to 20 hours)
+**Done when:** you've written your own GPT-2 from a template without copy-pasting.
+
+- [The Illustrated Transformer](https://jalammar.github.io/illustrated-transformer/) (read first)
+- [Transformer from scratch tutorial](https://transformerlens-intro.streamlit.app/Transformer_from_scratch) and
+  [Neel's video walkthrough](https://neelnanda.io/transformer-tutorial)
+- Learn [einops](https://einops.rocks/1-einops-basics/). Neel says skipping it causes "a *lot* of subtle bugs".
+
+## step 3: learn the tools (10 to 20 hours)
+**Done when:** you understand about 80% of the tutorial solutions.
+
+- The tutorials Neel links have grown into **ARENA**, the standard mech interp curriculum. Do its
+  "Transformer Interpretability" chapter (TransformerLens intro, then induction heads).
+- [TransformerLens](https://github.com/neelnanda-io/TransformerLens): the library for looking inside models.
+- [TransformerLens main demo](https://www.neelnanda.io/transformer-lens-demo)
+- Bonus: load GPT-2 Small in Colab and visualise its attention with [CircuitsVis](https://github.com/alan-cooney/CircuitsVis).
+
+## step 4 (optional): learn the vocabulary (5 to 20 hours)
+Skim Neel's [mech interp glossary](https://www.neelnanda.io/glossary) until you roughly know what each section is about.
+For the big picture, read [A Mathematical Framework for Transformer Circuits](https://transformer-circuits.pub/2021/framework/index.html)
+with its [walkthrough video](https://www.youtube.com/watch?v=KV5gbOmHbjU).
+
+## step 5: pick a problem
+Pick something rated **A** (a few days to two weeks) or **B** (several weeks). Good starting categories:
+
+- [Interpreting Algorithmic Problems](https://www.alignmentforum.org/s/yivyHaCAmMJ3CqSyj/p/ejtFsvyhRkMofKAFy): easiest, because there's a known right answer.
+- [The Case for Analysing Toy Language Models](https://www.alignmentforum.org/s/yivyHaCAmMJ3CqSyj/p/GWCgZrzWCZCuzGktv): 1 to 4 layer models, small enough to fully understand.
+
+Neel's tips: try a few problems for a day or two each and keep the one you like, use small models,
+look for simple explanations first, and treat it like a weekend hackathon. Learning a lot counts as success.
+
+## community
+- [Mech Interp Discord](https://discord.gg/WW5jV38Rwt)
+- [Neel's favourite papers list](https://www.neelnanda.io/mechanistic-interpretability/favourite-papers)
