@@ -1,0 +1,100 @@
+---
+title: "backpropagation, how the gradient is computed"
+sidebar_label: "backpropagation"
+sidebar_position: 3
+---
+
+# backpropagation, how the gradient is computed
+
+## part 3: backpropagation
+[3blue1brown, neural networks chapter 3 (intuition)](https://www.youtube.com/watch?v=Ilg3gGewQ5U&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
+· [chapter 4 (calculus)](https://www.youtube.com/watch?v=tIeHLnjs5U8&list=PLZHQObOWTQDNU6R1_67000Dx_ZCJB-3pi)
+
+### terms
+- **backpropagation**: the algorithm for computing the gradient $\nabla C$, which says how each weight and bias should change.
+- **nudge**: a small desired change to an activation, weight, or bias.
+- **forward pass**: input → output, computing every activation.
+- **backward pass**: output → input, computing how much the cost cares about each weight.
+- **stochastic gradient descent (sgd)**: compute the gradient on a small random **mini-batch** of examples instead of all of them.
+
+### the intuition: one training example
+say the input is a **2**. we want the "2" output neuron to go up and the other 9 outputs to go down.
+the size of each nudge is proportional to how far that output is from its target.
+
+to raise one output neuron's activation $a = \sigma(w_0 a_0 + \dots + w_n a_n + b)$, there are three dials:
+1. **increase the bias** $b$
+2. **increase the weights** $w_k$, in proportion to $a_k$. weights from bright neurons in the previous layer matter most. "neurons that fire together wire together."
+3. **change the previous layer's activations** $a_k$, in proportion to $w_k$. brighten neurons with positive weights and dim ones with negative weights.
+
+we can't set activations directly, only weights and biases. so dial 3 becomes a *wish list* for the previous layer.
+
+### propagating backwards
+- every output neuron has its own wish list for the previous layer. **add them all up** to get the total desired nudge for that layer.
+- repeat the same three-dial logic on that layer, then the one before, all the way back. that's the *back* in backpropagation.
+- do this for **every training example** and **average** the nudges. that average is (proportional to) $-\nabla C$.
+
+### stochastic gradient descent
+averaging over every example for each step is slow. instead:
+- shuffle the data and split it into **mini-batches** (for example, 100 examples each)
+- compute the step from one mini-batch, update, then move on to the next
+- each step is a rough estimate, "a drunk man stumbling downhill", but it's *much* faster and still gets there
+
+### the calculus: the simplest network
+use one neuron per layer, and look at the last two layers on a single example:
+
+$$
+z^{(L)} = w^{(L)} a^{(L-1)} + b^{(L)}, \qquad a^{(L)} = \sigma\left(z^{(L)}\right), \qquad C_0 = \left(a^{(L)} - y\right)^2
+$$
+
+- $z^{(L)}$ is the weighted sum *before* sigmoid.
+- the chain is $w^{(L)} \to z^{(L)} \to a^{(L)} \to C_0$.
+
+### chain rule: how sensitive is the cost to each dial?
+**weight:**
+
+$$
+\frac{\partial C_0}{\partial w^{(L)}} = \frac{\partial z^{(L)}}{\partial w^{(L)}} \cdot \frac{\partial a^{(L)}}{\partial z^{(L)}} \cdot \frac{\partial C_0}{\partial a^{(L)}} = a^{(L-1)} \cdot \sigma'\left(z^{(L)}\right) \cdot 2\left(a^{(L)} - y\right)
+$$
+
+**bias** (same thing, but $\partial z / \partial b = 1$):
+
+$$
+\frac{\partial C_0}{\partial b^{(L)}} = 1 \cdot \sigma'\left(z^{(L)}\right) \cdot 2\left(a^{(L)} - y\right)
+$$
+
+**previous activation** (this is what gets passed backwards):
+
+$$
+\frac{\partial C_0}{\partial a^{(L-1)}} = w^{(L)} \cdot \sigma'\left(z^{(L)}\right) \cdot 2\left(a^{(L)} - y\right)
+$$
+
+read the factors as:
+- $a^{(L-1)}$: the weight matters more when the previous neuron is bright (fire together, wire together)
+- $\sigma'(z^{(L)})$: how responsive the sigmoid is at that point
+- $2(a^{(L)} - y)$: how wrong the output is
+
+then repeat with $\partial C_0 / \partial a^{(L-1)}$ to get the weights and bias of the layer before. every layer reuses the work from the layer after it.
+
+### the full cost
+average over all training examples (or a mini-batch):
+
+$$
+\frac{\partial C}{\partial w^{(L)}} = \frac{1}{n} \sum_{k=0}^{n-1} \frac{\partial C_k}{\partial w^{(L)}}
+$$
+
+that's one entry of $\nabla C$. backprop computes all 13,002 of them.
+
+### more than one neuron per layer
+add subscripts: $j$ for a neuron in layer $L$ and $k$ for a neuron in layer $L-1$, so the weight is $w^{(L)}_{jk}$.
+
+$$
+z^{(L)}_j = \sum_k w^{(L)}_{jk} \, a^{(L-1)}_k + b^{(L)}_j, \qquad C_0 = \sum_j \left(a^{(L)}_j - y_j\right)^2
+$$
+
+the weight and bias formulas look the same. the one change: a previous neuron $a^{(L-1)}_k$ affects *every* neuron in the next layer, so **sum over all of them**:
+
+$$
+\frac{\partial C_0}{\partial a^{(L-1)}_k} = \sum_{j} w^{(L)}_{jk} \cdot \sigma'\left(z^{(L)}_j\right) \cdot \frac{\partial C_0}{\partial a^{(L)}_j}
+$$
+
+this is the math version of "add up every output neuron's wish list."
