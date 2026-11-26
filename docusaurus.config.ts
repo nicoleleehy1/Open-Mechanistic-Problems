@@ -62,10 +62,10 @@ const config: Config = {
     navbar: {
       title: 'mech interp lab notebook',
       items: [
-        {to: '/docs/mech-interp/findings', label: 'findings', position: 'right'},
-        {to: '/docs/mech-interp/experiments', label: 'experiments', position: 'right'},
+        // hidden until published: {to: '/docs/mech-interp/findings', label: 'findings', position: 'right'},
+        // hidden until published: {to: '/docs/mech-interp/experiments', label: 'experiments', position: 'right'},
         {to: '/docs/category/notes', label: 'notes', position: 'right'},
-        {to: '/docs/mech-interp/roadmap', label: 'roadmap', position: 'right'},
+        // hidden until published: {to: '/docs/mech-interp/roadmap', label: 'roadmap', position: 'right'},
       ],
     },
     prism: {

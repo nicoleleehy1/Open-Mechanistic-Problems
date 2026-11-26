@@ -13,10 +13,10 @@ export default function Home(): ReactNode {
         <h1>{siteConfig.title}</h1>
         <p>{siteConfig.tagline}.</p>
         <ul>
-          <li><Link to="/docs/mech-interp/findings">findings</Link></li>
-          <li><Link to="/docs/mech-interp/experiments">experiments</Link></li>
+          {/* hidden until published: <li><Link to="/docs/mech-interp/findings">findings</Link></li> */}
+          {/* hidden until published: <li><Link to="/docs/mech-interp/experiments">experiments</Link></li> */}
           <li><Link to="/docs/category/notes">notes</Link></li>
-          <li><Link to="/docs/mech-interp/roadmap">roadmap</Link></li>
+          {/* hidden until published: <li><Link to="/docs/mech-interp/roadmap">roadmap</Link></li> */}
         </ul>
       </main>
     </Layout>
